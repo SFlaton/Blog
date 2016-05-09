@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   # GET /posts
   # GET /posts.json
@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   # GET /posts/1
   # GET /posts/1.json
   def show
-
+    @post = Post.find(params[:id])
   end
 
   # GET /posts/new
@@ -26,7 +26,7 @@ class PostsController < ApplicationController
   # POST /posts.json
   def create
 
-    @post = Post.new(title: post_params[:title], content: post_params[:content], user: current_user) 
+    @post = Post.new(title: post_params[:title], content: post_params[:content], user: current_user)
 
     respond_to do |format|
       if @post.save
@@ -68,11 +68,8 @@ class PostsController < ApplicationController
     @posts = Post.where( user: @user ).order( created_at: :desc )
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
+  protected
+
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
