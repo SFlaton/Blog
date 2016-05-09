@@ -26,7 +26,7 @@ class PostsController < ApplicationController
   # POST /posts.json
   def create
 
-    @post = Post.new(post_params)
+    @post = Post.new(title: post_params[:title], content: post_params[:content], user: current_user) 
 
     respond_to do |format|
       if @post.save
@@ -63,6 +63,11 @@ class PostsController < ApplicationController
     end
   end
 
+  def user
+    @user = User.find(params[:user_id])
+    @posts = Post.where( user: @user ).order( created_at: :desc )
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
@@ -71,6 +76,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:title, :content, :user_id)
+      params.require(:post).permit(:title, :content)
     end
 end
